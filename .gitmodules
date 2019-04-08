@@ -1,0 +1,9 @@
+[submodule "afc-gw"]
+	path = afc-gw
+	url = https://github.com/lnls-dig/afc-gw
+[submodule "fpga-programming"]
+	path = fpga-programming
+	url = https://github.com/lnls-dig/fpga-programming
+[submodule "fpga-pcie-driver"]
+	path = fpga-pcie-driver
+	url = https://github.com/lnls-dig/fpga_pcie_driver
