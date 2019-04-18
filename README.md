@@ -40,13 +40,18 @@ To update each submodule within this project use:
 
 ## Build Instructions
 
-1. Build FPGA bitstream
+1. Be sure you are using [OpenMMC](https://github.com/lnls-dig/openMMC) as MMC firmware.
+The MMC is a microcontroller on the AFC board that controls power but it also controls
+how clocks are distributed.  This starting kit assume the same clock distribution as
+the one set by OpenMMC.
+
+2. Build FPGA bitstream
 
 ```bash
     make gateware
 ```
 
-2. Program the AFC with the generated gateware
+3. Program the AFC with the generated gateware
 
 ```bash
     cd fpga-programming
@@ -54,7 +59,7 @@ To update each submodule within this project use:
         --bit=../afc-gw/hdl/syn/afc_v3/vivado/afc_pcie_leds/afc_pcie_leds.runs/impl_1/afc_pcie_leds.bit
 ```
 
-3. Build driver/libs
+4. Build driver/libs
 
 ```bash
     make driver
@@ -83,7 +88,7 @@ the base address of a gpio module.
 In order to enable an LED, you can do the following:
 
 ```bash
-    ./regAccess --devicefile /dev/fpga-<slot_number> --write -n 4 --data 0x1 --address <0x00100100 + 0x4*(LED number)>
+    ./regAccess --devicefile /dev/fpga-<slot_number> --write -n 4 --data 0x1 --address 0x00100104
 ```
 
 So, to enable the first LED:
@@ -105,3 +110,29 @@ And the third one:
 ```
 
 To clear the LED just replace the address with `--address 0x00100100`
+
+6. Some words about the gateware
+
+The `pcie_cntr` PCIe bridge defines 3 BARs: BAR0 (2KB) for registers, BAR2 (1MB)
+for DDR and BAR4 (512KB) for a wishbone bus.
+Both the DDR and WB areas are a window on a larger area.  Register 0x1c defines
+the DDR page while register 0x24 defines the WB page.  Within the WB space, addresses
+are shifted by 3.  So the first word can be read at address 0, but the second word
+has to be read at address 0x20 (4 * 8).  Thus only 64KB of the WB space is visible
+through the PCIe bridge.
+
+In the starting kit, there is a WB crossbar behind the PCIe bridge.
+At address 0x000000 there are the SDB data (a ROM that describe the hardware behind
+the crossbar) and at address 0x100000 there is the `dbe_periph` core.  So if you
+want to access to that core, register 0x24 has to be set to 0x20.
+
+The `dbe_periph` also consists of a crossbar, with an UART at address 0x000, a gpio
+core that controls the led at address 0x100, another gpio core for the buttons at
+address 0x200, a timer at address 0x300 and the SDB at address 0x400.
+
+The gpio core has four registers:
+* `codr` at address 0x00: a 1 clears the corresponding bit
+* `sodr` at address 0x04: a 1 sets the corresponding bit.
+* `ddr` at address 0x08: define the direction of each port, but this is not used
+  (ports are always outputs).
+* `psr` at address 0x0c: to read the state of the gpios.
