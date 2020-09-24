@@ -60,7 +60,7 @@ gateware: clone_afc_gw gen_gw_makefile
 gateware_clean: gen_gw_makefile
 	$(MAKE) -C $(AFC_GW_SYN_DIR) clean
 
-gen_gw_makefile: $(AFC_GW_MAKEFILE)
+gen_gw_makefile:
 ifeq ($(wildcard $(AFC_GW_SYN_DIR)/Makefile),)
 	$(BASH) -c "cd $(AFC_GW_SYN_DIR) && ./build_synthesis_sdb.sh && hdlmake -a makefile"
 endif
