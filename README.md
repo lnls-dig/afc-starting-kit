@@ -56,7 +56,7 @@ the one set by OpenMMC.
 ```bash
     cd fpga-programming
     ./vivado-prog.py --svf=afc-scansta.svf --prog_serial --host_url=<mch_ip>:<board_port_number> \
-        --bit=../afc-gw/hdl/syn/afc_v3/vivado/afc_pcie_leds/afc_pcie_leds.runs/impl_1/afc_pcie_leds.bit
+        --bit=../afc-gw/hdl/syn/afc_v3/vivado/pcie_leds/pcie_leds.runs/impl_1/pcie_leds.bit
 ```
 
 4. Build driver/libs
