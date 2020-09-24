@@ -6,7 +6,7 @@ DEPMOD ?=   depmod
 
 KERNEL_VERSION ?= $(shell uname -r)
 AFC_GW_DIR = afc-gw
-AFC_GW_SYN_DIR = $(AFC_GW_DIR)/hdl/syn/afc_v3/vivado/afc_pcie_leds
+AFC_GW_SYN_DIR = $(AFC_GW_DIR)/hdl/syn/afc_v3/vivado/pcie_leds
 AFC_GW_MAKEFILE = $(AFC_GW_SYN_DIR)/Makefile
 FPGA_PCIE_DRIVER_DIR = fpga-pcie-driver
 FPGA_PCIE_DRIVER_TESTS_DIR = $(FPGA_PCIE_DRIVER_DIR)/tests/pcie
